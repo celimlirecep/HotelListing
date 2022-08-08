@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using HotelListing.API.Data;
 using HotelListing.API.Models.Country;
 using AutoMapper;
+using HotelListing.API.Abstract;
 
 namespace HotelListing.API.Controllers
 {
@@ -15,20 +16,22 @@ namespace HotelListing.API.Controllers
     [ApiController]
     public class CountriesController : ControllerBase
     {
-        private readonly HotelListingDbContext _context;
+        
         private readonly IMapper _mapper;
+        private readonly ICountriesRepository _countries;
 
-        public CountriesController(HotelListingDbContext context, IMapper mapper)
+        public CountriesController( IMapper mapper,ICountriesRepository countries)
         {
-            _context = context;
+            
             _mapper = mapper;
+            this._countries = countries;
         }
 
         // GET: api/Countries
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> GetCountries()
         {
-            var countries = await _context.Countries.ToListAsync();
+            var countries = await _countries.GetAllAsync();
             var records=_mapper.Map<List<GetCountryDTO>>(countries);
        
             return records ;
@@ -38,7 +41,7 @@ namespace HotelListing.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CountryDTO>> GetCountry(int id)
         {
-            var country = await _context.Countries.Include(q=> q.Hotels).FirstOrDefaultAsync(q=>q.Id==id);
+            var country =await _countries.GetDetails(id);
 
             if (country == null)
             {
@@ -52,22 +55,28 @@ namespace HotelListing.API.Controllers
         // PUT: api/Countries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCountry(int id, Country country)
+        public async Task<IActionResult> PutCountry(int id, UpdateCountryDTO updateCountryDTO)
         {
-            if (id != country.Id)
+
+            if (id != updateCountryDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(country).State = EntityState.Modified;
+            var country = await _countries.GetAsync(updateCountryDTO.Id);
+            if (country==null)
+            {
+                return NotFound();
+            }
 
+            _mapper.Map(updateCountryDTO, country);
             try
             {
-                await _context.SaveChangesAsync();
+                await _countries.UpdateAsync(country);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CountryExists(id))
+                if (!await CountryExists(id))
                 {
                     return NotFound();
                 }
@@ -86,9 +95,7 @@ namespace HotelListing.API.Controllers
         public async Task<ActionResult<Country>> PostCountry(CreateCountryDTO countryDTO)
         {
             var country=_mapper.Map<Country>(countryDTO);
-            _context.Countries.Add(country);
-            await _context.SaveChangesAsync();
-
+           await _countries.AddAsync(country);
             return CreatedAtAction("GetCountry", new { id = country.Id }, country);
         }
 
@@ -96,21 +103,21 @@ namespace HotelListing.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
-            var country = await _context.Countries.FindAsync(id);
+            var country = await _countries.GetAsync(id);
             if (country == null)
             {
                 return NotFound();
             }
 
-            _context.Countries.Remove(country);
-            await _context.SaveChangesAsync();
+           await _countries.DeleteAsync(id);
+            
 
             return NoContent();
         }
 
-        private bool CountryExists(int id)
+        private async Task<bool> CountryExists(int id)
         {
-            return _context.Countries.Any(e => e.Id == id);
+            return await _countries.Exist(id);
         }
     }
 }
