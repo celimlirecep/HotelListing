@@ -7,5 +7,6 @@
         public double Rating { get; set; }
         public string Adress { get; set; }
         public int CountryId { get; set; }
+
     }
 }
