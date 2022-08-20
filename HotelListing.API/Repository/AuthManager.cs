@@ -19,13 +19,24 @@ namespace HotelListing.API.Repository
         public async Task<IEnumerable<IdentityError>> RegisterAsync(ApiUserDTO userDTO)
         {
             var user = _mapper.Map<ApiUser>(userDTO);
+            IdentityResult result = new IdentityResult();
             user.UserName = userDTO.Email;
-            var result =await  _user.CreateAsync(user,userDTO.PassWord);
+            try
+            {
+                 result = await _user.CreateAsync(user, userDTO.PassWord);
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
             if (result.Succeeded)
             {
-             result = await _user.AddToRoleAsync(user, "User");
+                result = await _user.AddToRoleAsync(user, "User");
             }
             return result.Errors;
+
         }
     }
 }

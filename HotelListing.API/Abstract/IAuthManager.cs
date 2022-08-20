@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HotelListing.API.Abstract
 {
-    public interface IAuthManager
+    public interface IAuthManager 
     {
+        Task<bool> Login(LoginDTO model);
         Task<IEnumerable<IdentityError>> RegisterAsync(ApiUserDTO userDTO);
     }
 }
