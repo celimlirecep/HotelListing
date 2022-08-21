@@ -1,10 +1,15 @@
 using HotelListing.API.Abstract;
 using HotelListing.API.Configuration;
 using HotelListing.API.Data;
+using HotelListing.API.Middleware;
 using HotelListing.API.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Configuration;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("HotelListingDbConnectionString");
@@ -26,7 +31,34 @@ builder.Services.AddScoped<IAuthManager, AuthManager>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddAutoMapper(typeof(MapperConfig));
-builder.Services.AddIdentityCore<ApiUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<HotelListingDbContext>();
+
+
+builder.Services.AddIdentityCore<ApiUser>()
+    .AddRoles<IdentityRole>()
+    .AddTokenProvider<DataProtectorTokenProvider<ApiUser>>("HotelListingApi")
+    .AddEntityFrameworkStores<HotelListingDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme=JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        //gizli keyimizi kullansýnmý
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer=true,
+        ValidateAudience=true,
+        ValidateLifetime=true,
+        ClockSkew=TimeSpan.Zero,
+        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+    };
+});
+
 #endregion
 
 #region Host
@@ -43,8 +75,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
+
+
 app.UseCors("AllowAll");
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

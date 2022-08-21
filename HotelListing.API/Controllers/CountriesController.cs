@@ -9,26 +9,32 @@ using HotelListing.API.Data;
 using HotelListing.API.Models.Country;
 using AutoMapper;
 using HotelListing.API.Abstract;
+using Microsoft.AspNetCore.Authorization;
+using HotelListing.API.Exceptions;
 
 namespace HotelListing.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   
     public class CountriesController : ControllerBase
     {
         
         private readonly IMapper _mapper;
         private readonly ICountriesRepository _countries;
+        private readonly ILogger<CountriesController> _logger;
 
-        public CountriesController( IMapper mapper,ICountriesRepository countries)
+        public CountriesController( IMapper mapper,ICountriesRepository countries,ILogger<CountriesController> logger)
         {
             
             _mapper = mapper;
             this._countries = countries;
+            this._logger = logger;
         }
 
         // GET: api/Countries
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> GetCountries()
         {
             var countries = await _countries.GetAllAsync();
@@ -39,13 +45,14 @@ namespace HotelListing.API.Controllers
 
         // GET: api/Countries/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<CountryDTO>> GetCountry(int id)
         {
             var country =await _countries.GetDetails(id);
 
             if (country == null)
             {
-                return NotFound();
+                throw new NotFoundException(nameof(GetCountry), id);
             }
             var countryDto=_mapper.Map<CountryDTO>(country);
 
@@ -55,6 +62,7 @@ namespace HotelListing.API.Controllers
         // PUT: api/Countries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutCountry(int id, UpdateCountryDTO updateCountryDTO)
         {
 
@@ -66,7 +74,7 @@ namespace HotelListing.API.Controllers
             var country = await _countries.GetAsync(updateCountryDTO.Id);
             if (country==null)
             {
-                return NotFound();
+                throw new NotFoundException(nameof(PutCountry), id);
             }
 
             _mapper.Map(updateCountryDTO, country);
@@ -78,7 +86,7 @@ namespace HotelListing.API.Controllers
             {
                 if (!await CountryExists(id))
                 {
-                    return NotFound();
+                    throw new NotFoundException(nameof(PutCountry), id);
                 }
                 else
                 {
@@ -92,6 +100,7 @@ namespace HotelListing.API.Controllers
         // POST: api/Countries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Country>> PostCountry(CreateCountryDTO countryDTO)
         {
             var country=_mapper.Map<Country>(countryDTO);
@@ -101,12 +110,13 @@ namespace HotelListing.API.Controllers
 
         // DELETE: api/Countries/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")] //[Authorize(Roles = "Administrator,User")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             var country = await _countries.GetAsync(id);
             if (country == null)
             {
-                return NotFound();
+                throw new NotFoundException(nameof(DeleteCountry), id);
             }
 
            await _countries.DeleteAsync(id);
