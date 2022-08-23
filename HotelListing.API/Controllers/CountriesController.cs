@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelListing.API.Data;
-using HotelListing.API.Models.Country;
+
 using AutoMapper;
-using HotelListing.API.Abstract;
+
 using Microsoft.AspNetCore.Authorization;
-using HotelListing.API.Exceptions;
+
+using  HotelListing.API.Data.Abstract;
+using  HotelListing.API.Data.Models.Country;
+using  HotelListing.API.Data.Models;
+using  HotelListing.API.Data.Exceptions;
 
 namespace HotelListing.API.Controllers
 {
@@ -33,7 +33,7 @@ namespace HotelListing.API.Controllers
         }
 
         // GET: api/Countries
-        [HttpGet]
+        [HttpGet("GetAll")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> GetCountries()
         {
@@ -41,6 +41,15 @@ namespace HotelListing.API.Controllers
             var records=_mapper.Map<List<GetCountryDTO>>(countries);
        
             return records ;
+        }
+
+        //GET: api/v1/GetPagedCountries/?startIndex=25&PageNumber=1
+        [HttpGet]
+        [Authorize]
+        public async Task<ActionResult<PagesResult<GetCountryDTO>>> GetPagedCountries([FromQuery] QueryParameters queryParameters)
+        {
+            var pagedCountriesResult = await _countries.GetAllAsync<GetCountryDTO>(queryParameters);
+            return Ok(pagedCountriesResult);
         }
 
         // GET: api/Countries/5

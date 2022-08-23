@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelListing.API.Data;
 using AutoMapper;
-using HotelListing.API.Abstract;
-using HotelListing.API.Models.Hotel;
+
 using Microsoft.AspNetCore.Authorization;
+
+using HotelListing.API.Data.Abstract;
+using HotelListing.API.Data.Models.Hotel;
+using HotelListing.API.Data.Models;
 
 namespace HotelListing.API.Controllers
 {
@@ -28,11 +27,18 @@ namespace HotelListing.API.Controllers
         }
 
         // GET: api/Hotels
-        [HttpGet]
+        [HttpGet("getAll")]
         public async Task<ActionResult<IEnumerable<HotelDTO>>> GetHotels()
         {
             var hotel= await _hotel.GetAllAsync();
              return Ok(_mapper.Map<List<HotelDTO>>(hotel));
+        }
+        // GET: api/Hotels
+        [HttpGet]
+        public async Task<ActionResult<PagesResult<HotelDTO>>> GetPagesHotels([FromQuery] QueryParameters queryParameters)
+        {
+            var pagesHotelResult = await _hotel.GetAllAsync<HotelDTO>(queryParameters);
+            return Ok(pagesHotelResult);
         }
 
         // GET: api/Hotels/5

@@ -1,15 +1,17 @@
-using HotelListing.API.Abstract;
-using HotelListing.API.Configuration;
+
 using HotelListing.API.Data;
-using HotelListing.API.Middleware;
-using HotelListing.API.Repository;
+using HotelListing.API.Data.Abstract;
+using HotelListing.API.Data.Configuration;
+using HotelListing.API.Data.Middleware;
+using HotelListing.API.Data.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System.Configuration;
+
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +22,7 @@ builder.Services.AddDbContext<HotelListingDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
-builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
@@ -88,7 +90,10 @@ builder.Services.AddAuthentication(options =>
 #region Host
 //appsetting json ayarlar yapýldý dosyaya seq urline ve console a yazdýrýldý
 builder.Host.UseSerilog((context, loggerconfiguration) => loggerconfiguration.WriteTo.Console().ReadFrom.Configuration(context.Configuration));
-
+builder.Services.AddControllers().AddOData(options =>
+{
+    options.Select().Filter().OrderBy();
+});
 #endregion
 
 #region App
