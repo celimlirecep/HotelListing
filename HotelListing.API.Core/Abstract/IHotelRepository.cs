@@ -1,7 +1,7 @@
 ﻿
 using HotelListing.API.Data;
 
-namespace  HotelListing.API.Data.Abstract
+namespace  HotelListing.API.Core.Abstract
 {
     public interface IHotelRepository:IGenericRepository<Hotel>
     {

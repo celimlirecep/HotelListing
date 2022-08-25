@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using  HotelListing.API.Data.Abstract;
-using  HotelListing.API.Data;
-using  HotelListing.API.Data.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace  HotelListing.API.Data.Repository
+using  HotelListing.API.Data;
+
+using Microsoft.EntityFrameworkCore;
+using HotelListing.API.Core.Abstract;
+using HotelListing.API.Core.Models;
+
+namespace  HotelListing.API.Core.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -22,6 +24,11 @@ namespace  HotelListing.API.Data.Repository
             await _context.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
+        }
+
+        public Task<TResult> AddAsync<TSource, TResult>(TSource entity)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task DeleteAsync(int id)
@@ -58,6 +65,11 @@ namespace  HotelListing.API.Data.Repository
             };
         }
 
+        public Task<List<T>> GetAllAsync<TResult>()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<T> GetAsync(int? id)
         {
             if (id==null)
@@ -67,10 +79,20 @@ namespace  HotelListing.API.Data.Repository
            return await _context.Set<T>().FindAsync(id);
         }
 
+        public Task<TResult> GetAsync<TResult>(int? id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task UpdateAsync(T entity)
         {
             _context.Update(entity);
             await _context.SaveChangesAsync();
+        }
+
+        public Task UpdateAsync<TSource>(int id, TSource entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

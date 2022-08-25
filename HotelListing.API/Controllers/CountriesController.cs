@@ -10,10 +10,10 @@ using HotelListing.API.Data;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
-using HotelListing.API.Data.Abstract;
-using HotelListing.API.Data.Models;
-using HotelListing.API.Data.Models.Country;
-using HotelListing.API.Data.Exceptions;
+using HotelListing.API.Core.Abstract;
+using HotelListing.API.Core.Models.Country;
+using HotelListing.API.Core.Models;
+using HotelListing.API.Core.Exceptions;
 
 namespace HotelListing.API.Controllers
 {

@@ -1,4 +1,4 @@
-﻿namespace  HotelListing.API.Data.Models
+﻿namespace  HotelListing.API.Core.Models
 {
     public class PagesResult<T>
     {

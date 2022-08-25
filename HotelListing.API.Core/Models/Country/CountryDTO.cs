@@ -1,6 +1,7 @@
-﻿using  HotelListing.API.Data.Models.Hotel;
+﻿using HotelListing.API.Core.Models.Hotel;
 
-namespace  HotelListing.API.Data.Models.Country
+
+namespace  HotelListing.API.Core.Models.Country
 {
     public class CountryDTO:BaseCountryDTO
     {

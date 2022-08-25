@@ -1,10 +1,11 @@
-﻿using  HotelListing.API.Data.Exceptions;
+﻿
+using HotelListing.API.Core.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace  HotelListing.API.Data.Middleware
+namespace  HotelListing.API.Core.Middleware
 {
     public class ExceptionMiddleware
     {

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using HotelListing.API.Core.Abstract;
+using HotelListing.API.Core.Models.Users;
 
-using HotelListing.API.Data.Abstract;
-using HotelListing.API.Data.Models.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

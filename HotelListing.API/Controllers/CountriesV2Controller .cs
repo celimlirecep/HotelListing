@@ -12,10 +12,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.AspNetCore.OData.Query;
-using HotelListing.API.Data.Abstract;
-using HotelListing.API.Data.Models.Country;
+
 using HotelListing.API.Data;
-using HotelListing.API.Data.Exceptions;
+using HotelListing.API.Core.Abstract;
+using HotelListing.API.Core.Models.Country;
+using HotelListing.API.Core.Exceptions;
 
 namespace HotelListing.API.Controllers
 {

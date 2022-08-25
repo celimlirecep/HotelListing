@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
-using  HotelListing.API.Data.Abstract;
+
 using  HotelListing.API.Data;
-using  HotelListing.API.Data.Models.Users;
-using HotelListing.API.Data;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using HotelListing.API.Core.Abstract;
+using HotelListing.API.Core.Models.Users;
 
-namespace  HotelListing.API.Data.Repository
+namespace  HotelListing.API.Core.Repository
 {
     public class AuthManager : IAuthManager
     {

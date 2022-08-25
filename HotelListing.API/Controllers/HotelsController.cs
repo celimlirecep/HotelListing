@@ -9,10 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
-using HotelListing.API.Data.Abstract;
-using HotelListing.API.Data.Models.Hotel;
-using HotelListing.API.Data.Models;
+
 using HotelListing.API.Data;
+using HotelListing.API.Core.Abstract;
+using HotelListing.API.Core.Models.Hotel;
+using HotelListing.API.Core.Models;
 
 namespace HotelListing.API.Controllers
 {

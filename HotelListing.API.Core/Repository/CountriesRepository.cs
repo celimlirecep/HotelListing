@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using  HotelListing.API.Data.Abstract;
+
 using  HotelListing.API.Data;
 using Microsoft.EntityFrameworkCore;
+using HotelListing.API.Core.Abstract;
 
-namespace  HotelListing.API.Data.Repository
+namespace  HotelListing.API.Core.Repository
 {
     public class CountriesRepository:GenericRepository<Country>,ICountriesRepository
     {
