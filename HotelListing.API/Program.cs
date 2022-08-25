@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-
+using System.Configuration;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

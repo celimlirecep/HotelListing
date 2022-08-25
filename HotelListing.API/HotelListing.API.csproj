@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.7" />
-   
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,8 +26,10 @@
     <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
-	<ProjectReference Include="..\HotelListing.API.Core\HotelListing.API.Core.csproj" />
-	<ProjectReference Include="..\HotelListing.API.Data\HotelListing.API.Data.csproj" />
 
+  <ItemGroup>
+    <ProjectReference Include="..\HotelListing.API.Core\HotelListing.API.Core.csproj" />
+    <ProjectReference Include="..\HotelListingData\HotelListing.API.Data.csproj" />
+  </ItemGroup>
 
 </Project>

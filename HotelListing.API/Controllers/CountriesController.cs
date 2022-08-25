@@ -1,4 +1,8 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelListing.API.Data;
@@ -6,11 +10,10 @@ using HotelListing.API.Data;
 using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
-
-using  HotelListing.API.Data.Abstract;
-using  HotelListing.API.Data.Models.Country;
-using  HotelListing.API.Data.Models;
-using  HotelListing.API.Data.Exceptions;
+using HotelListing.API.Data.Abstract;
+using HotelListing.API.Data.Models;
+using HotelListing.API.Data.Models.Country;
+using HotelListing.API.Data.Exceptions;
 
 namespace HotelListing.API.Controllers
 {
