@@ -40,10 +40,8 @@ namespace HotelListing.API.Controllers
         [Authorize]
         public async Task<ActionResult<IEnumerable<GetCountryDTO>>> GetCountries()
         {
-            var countries = await _countries.GetAllAsync();
-            var records=_mapper.Map<List<GetCountryDTO>>(countries);
-       
-            return records ;
+            var countries = await _countries.GetAllAsync<GetCountryDTO>();
+            return countries ;
         }
 
         //GET: api/v1/GetPagedCountries/?startIndex=25&PageNumber=1
@@ -60,14 +58,7 @@ namespace HotelListing.API.Controllers
         [Authorize]
         public async Task<ActionResult<CountryDTO>> GetCountry(int id)
         {
-            var country =await _countries.GetDetails(id);
-
-            if (country == null)
-            {
-                throw new NotFoundException(nameof(GetCountry), id);
-            }
-            var countryDto=_mapper.Map<CountryDTO>(country);
-
+            var countryDto =await _countries.GetDetails(id);
             return Ok(countryDto);
         }
 
@@ -83,16 +74,10 @@ namespace HotelListing.API.Controllers
                 return BadRequest();
             }
 
-            var country = await _countries.GetAsync(updateCountryDTO.Id);
-            if (country==null)
-            {
-                throw new NotFoundException(nameof(PutCountry), id);
-            }
-
-            _mapper.Map(updateCountryDTO, country);
+   
             try
             {
-                await _countries.UpdateAsync(country);
+                await _countries.UpdateAsync(id, updateCountryDTO);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -113,10 +98,10 @@ namespace HotelListing.API.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<Country>> PostCountry(CreateCountryDTO countryDTO)
+        public async Task<ActionResult<CountryDTO>> PostCountry(CreateCountryDTO countryDTO)
         {
-            var country=_mapper.Map<Country>(countryDTO);
-           await _countries.AddAsync(country);
+            
+           var country= await _countries.AddAsync<CreateCountryDTO,GetCountryDTO>(countryDTO);
             return CreatedAtAction("GetCountry", new { id = country.Id }, country);
         }
 
@@ -125,15 +110,7 @@ namespace HotelListing.API.Controllers
         [Authorize(Roles = "Administrator")] //[Authorize(Roles = "Administrator,User")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
-            var country = await _countries.GetAsync(id);
-            if (country == null)
-            {
-                throw new NotFoundException(nameof(DeleteCountry), id);
-            }
-
            await _countries.DeleteAsync(id);
-            
-
             return NoContent();
         }
 

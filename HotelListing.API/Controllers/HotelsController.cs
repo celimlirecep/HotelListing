@@ -35,8 +35,8 @@ namespace HotelListing.API.Controllers
         [HttpGet("getAll")]
         public async Task<ActionResult<IEnumerable<HotelDTO>>> GetHotels()
         {
-            var hotel= await _hotel.GetAllAsync();
-             return Ok(_mapper.Map<List<HotelDTO>>(hotel));
+            var hotel= await _hotel.GetAllAsync<HotelDTO>();
+             return Ok(hotel);
         }
         // GET: api/Hotels
         [HttpGet]
@@ -50,14 +50,14 @@ namespace HotelListing.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<HotelDTO>> GetHotel(int id)
         {
-            var hotel = await _hotel.GetAsync(id);
+            var hotel = await _hotel.GetAsync<HotelDTO>(id);
 
             if (hotel == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<HotelDTO>(hotel));
+            return Ok(hotel);
         }
 
         // PUT: api/Hotels/5
@@ -98,10 +98,10 @@ namespace HotelListing.API.Controllers
         // POST: api/Hotels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Hotel>> PostHotel(CreateHotelDTO hotelDTO)
+        public async Task<ActionResult<HotelDTO>> PostHotel(CreateHotelDTO hotelDTO)
         {
-           var hotel= _mapper.Map<Hotel>(hotelDTO);
-            await _hotel.AddAsync(hotel);
+           
+            var hotel= await _hotel.AddAsync<CreateHotelDTO, HotelDTO>(hotelDTO);
             return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotel);
         }
 
